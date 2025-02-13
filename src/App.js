@@ -64,8 +64,8 @@ textAndOtherTl
   })
   .to(otherTxtElements, {
     autoAlpha: 1,
-    stagger: 0.2,
-    duration: 1,
+    stagger: 0.3,
+    duration: 0.4,
     ease: "cubic-bezier(.21,.65,.67,1)",
   }, "<80%"); // "<" signifie que cette animation démarre en même temps que la précédente
   
@@ -107,12 +107,20 @@ textAndOtherTl
 
     if (spotLightRef1.current && spotLightRef2.current) {
       tl.to(
-        [spotLightRef2.current, spotLightRef1.current],
+        [spotLightRef2.current],
         {
           intensity: 1.5, // Les lumières augmentent en intensité
           ease: "linear",
-          stagger: 0.1,
+          // stagger: 0.1,
         }
+      );
+      tl.to(
+        [spotLightRef1.current],
+        {
+          intensity: 2.5, // Les lumières augmentent en intensité
+          ease: "linear",
+          // stagger: 0.1,
+        },"<"
       );
     }
 
@@ -128,7 +136,7 @@ textAndOtherTl
     tl.to(cameraTarget.current, {
       x: -5,
       y: 0.5,
-      z: -2.5, // On termine à Z = 5 pour garantir une orientation correcte
+      z: -2.5, 
       ease: "linear"
     },"<");
 
@@ -162,7 +170,7 @@ textAndOtherTl
         },"<30%");
   
       }
-      tl.to({}, {});
+      tl.to({}, {},"<50%");
 
     return () => ScrollTrigger.getAll().forEach((t) => t.kill());
   }, []);
