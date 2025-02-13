@@ -5,7 +5,7 @@ import * as THREE from "three";
 
 // On définit des valeurs par défaut pour position, rotation et scale
 export function Car({
-  position = [0, 0.51, -5],
+  position = [],
   rotation = [0, 0, 0],
   scale = [1.5, 1.5, 1.5],
 }) {

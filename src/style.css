@@ -81,6 +81,16 @@ html.lenis, html.lenis body {
   height: 100%;
   width: 100%;
 }
+.autosize-container {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+.container__bloc-txt {
+display: flex;
+justify-content:flex-end;
+
+}
 
 .bloc-txt {
   z-index: 2;
@@ -90,32 +100,35 @@ html.lenis, html.lenis body {
   justify-content: center;
   gap: 5px;
   height: 100%;
-  width: 50vw;
+  width: 50%;
+  padding: 0 20px;
 }
 .surTitre {
   color: #878787;
   font-size: 20px;
 font-weight: 500;
 text-transform: uppercase;
-max-width: 30vw;
 overflow: hidden;
 }
 .surTitre span {
   display: block;
-white-space: nowrap;
+/* white-space: nowrap; */
 
 }
 .bloc-txt h2 {
   margin: 0;
   padding: 0;
   overflow: hidden;
+  max-width: 580px;
+  width: 100%;
+  /* text-wrap: balance; */
 }
 .bloc-txt h2 span{
   color: #FFF;
 font-size: 36px;
 font-weight: 500;
 display: block;
-white-space: nowrap;
+/* white-space: nowrap; */
 
 }
 .bloc-txt__p {
@@ -123,8 +136,6 @@ white-space: nowrap;
   color: #878787;
 font-weight: 500;
 line-height: 25px;
-max-width: 30vw;
-
 display: flex;
   flex-direction: column;
   gap: 5px;
@@ -144,4 +155,33 @@ width: max-content;
 text-decoration: none;
 margin-top: 20px;
 opacity: 0;
+}
+
+@media screen and (max-width : 1920px) {
+  .autosize-container {
+    max-width: 1280px;
+  }
+}
+
+@media screen and (max-width : 1000px) {
+  .container__bloc-txt {
+    justify-content: center;
+    height: 100dvh;
+    max-width: 600px !important;
+    padding: 40px 0;
+    box-sizing: border-box;
+  }
+  .bloc-txt {
+    justify-content: flex-start;
+    width: 100%;
+  }
+  .bloc-txt h2 span {
+    font-size: 24px;
+  }
+  .bloc-txt__p {
+    font-size: 14px;
+  }
+  .surTitre {
+    font-size: 16px;
+  }
 }

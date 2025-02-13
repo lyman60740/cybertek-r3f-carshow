@@ -27,8 +27,6 @@ import Lenis from "@studio-freight/lenis";
 gsap.registerPlugin(ScrollTrigger);
 
 
-// 🎥 **CAMERA RIG avec Interpolation**
-// 🎥 **CAMERA RIG avec ScrollTrigger et useFrame**
 function CameraRig({ groundRef, spotLightRef1, spotLightRef2, spotLightRef3 }) {
   const { camera } = useThree();
   const cameraTarget = useRef(new THREE.Vector3(0, 10, 5)); 
@@ -38,7 +36,8 @@ function CameraRig({ groundRef, spotLightRef1, spotLightRef2, spotLightRef3 }) {
   const otherTxtElements = document.querySelectorAll(".bloc-txt__p p, .bloc-txt a ")
  
   useEffect(() => {
-    console.log(logoElements)
+   
+
     // ✅ Position initiale (évite la confusion)
     camera.position.set(0, 10, 5);
     
@@ -50,14 +49,16 @@ function CameraRig({ groundRef, spotLightRef1, spotLightRef2, spotLightRef3 }) {
   useEffect(() => {
 
     gsap.set(blocTxtElements, {
-      yPercent: 100,
+      x: 30,
+      autoAlpha: 0
     });
 
     const textAndOtherTl = gsap.timeline({ paused: true });
 
 textAndOtherTl
   .to(blocTxtElements, {
-    yPercent: 0,
+    x: 0,
+    autoAlpha: 1,
     stagger: 0.3,
     duration: 0.4,
     ease: "cubic-bezier(.21,.65,.67,1)",
@@ -89,22 +90,6 @@ textAndOtherTl
       }
     });
 
-    // 🔄 Animation fluide de la position
-    // tl.to(cameraTarget.current, {
-    //   x: -5,
-    //   y: 5,
-    //   z: 5, // On termine à Z = 5 pour garantir une orientation correcte
-    //   ease: "power3.out"
-    // });
-
-    // 🔄 Animation fluide du lookAt
-    // tl.to(lookAtTarget.current, {
-    //   x: 0,
-    //   y: 0, // Optionnel : on peut ajuster le focus
-    //   z: 0,
-    //   ease: "power3.out"
-    // }); // 🔄 Lancer en même temps que la position
-
     if (spotLightRef1.current && spotLightRef2.current) {
       tl.to(
         [spotLightRef2.current],
@@ -133,12 +118,27 @@ textAndOtherTl
       },"<80%"); // 🔄 Démarre en même temps que l’animation de la caméra
     }
 
-    tl.to(cameraTarget.current, {
-      x: -5,
-      y: 0.5,
-      z: -2.5, 
-      ease: "linear"
-    },"<");
+    const mm = gsap.matchMedia();
+
+    mm.add("(max-width: 999px)", ()=> {
+      tl.to(cameraTarget.current, {
+        x: 0,
+        y: 7,
+        z: -1, 
+        ease: "linear"
+      },"<");
+    })
+
+    mm.add("(min-width: 1000px)", ()=> {
+      tl.to(cameraTarget.current, {
+        x: -5,
+        y: 0.5,
+        z: -2.5, 
+        ease: "linear"
+      },"<");
+    })
+
+    
 
 
     if (groundRef.current) {
@@ -214,7 +214,7 @@ function CarShow() {
 
       <color args={[0, 0, 0]} attach="background" />
 
-      <Car ref={targetRef} position={[0, 0, -5]} rotation={[0, 0, 0]} scale={[1.5, 1.5, 1.5]} />
+      <Car ref={targetRef} position={[-0.25, 0, -5]} rotation={[0, 0, 0]} scale={[1.5, 1.5, 1.5]} />
     
 
       <spotLight
