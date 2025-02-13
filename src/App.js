@@ -26,8 +26,9 @@ import Lenis from "@studio-freight/lenis";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const mm = gsap.matchMedia();
 
-function CameraRig({ groundRef, spotLightRef1, spotLightRef2, spotLightRef3 }) {
+function CameraRig({ groundRef, spotLightRef1, spotLightRef2, spotLightRef3, targetRef }) {
   const { camera } = useThree();
   const cameraTarget = useRef(new THREE.Vector3(0, 10, 5)); 
   const lookAtTarget = useRef(new THREE.Vector3(0, 0, 0)); 
@@ -76,7 +77,7 @@ textAndOtherTl
       scrollTrigger: {
         trigger: ".container",
         start: "top top",
-        end: "+=3000px", 
+        end: "+=2000px", 
         scrub: 2,
         pin: true,
         // markers: true,
@@ -96,7 +97,7 @@ textAndOtherTl
         {
           intensity: 1.5, // Les lumières augmentent en intensité
           ease: "linear",
-          // stagger: 0.1,
+          duration: 0.5
         }
       );
       tl.to(
@@ -104,7 +105,7 @@ textAndOtherTl
         {
           intensity: 2.5, // Les lumières augmentent en intensité
           ease: "linear",
-          // stagger: 0.1,
+          duration: 0.5
         },"<"
       );
     }
@@ -113,20 +114,31 @@ textAndOtherTl
       tl.to(logoElements, {
         opacity: 0,
         y: -20,
-        stagger: 0.1, 
+        stagger: 0.1,
+        duration: 0.5, 
         ease: "cubic-bezier(.21,.65,.67,1)",
       },"<80%"); // 🔄 Démarre en même temps que l’animation de la caméra
     }
 
-    const mm = gsap.matchMedia();
+    
 
-    mm.add("(max-width: 999px)", ()=> {
-      tl.to(cameraTarget.current, {
-        x: 0,
-        y: 7,
-        z: -1, 
-        ease: "linear"
-      },"<");
+    mm.add("(max-width: 999px)", ()=> {   
+      if (targetRef.current) {
+        tl.to(targetRef.current.position, {
+          x: -0.25,
+          y: 0,
+          z: 3.5,
+          duration: 3
+        });
+
+        tl.to(cameraTarget.current, {
+          x: 0,
+          y: 2,
+          z: 15, 
+          duration: 3,
+          ease: "linear"
+        },"<");
+      }
     })
 
     mm.add("(min-width: 1000px)", ()=> {
@@ -134,23 +146,25 @@ textAndOtherTl
         x: -5,
         y: 0.5,
         z: -2.5, 
+        duration: 3,
         ease: "linear"
       },"<");
     })
 
     
 
-
+    mm.add("(min-width: 1000px)", ()=> {
     if (groundRef.current) {
       tl.to(groundRef.current.material, {
         opacity: 0, // ✅ Disparition progressive
         ease: "linear",
+        duration: 1,
         onUpdate: () => {
           groundRef.current.material.needsUpdate = true; // ✅ Forcer le rendu du changement d’opacité
         },
       }, "<"); // 🔄 Démarre en même temps que l’animation de la caméra
     }
-
+  })
     
 
       if (spotLightRef1.current && spotLightRef2.current) {
@@ -159,21 +173,34 @@ textAndOtherTl
           {
             intensity: 0, // Les lumières augmentent en intensité
             ease: "linear",
-          },"<"
+            duration: 0.5,
+          },"<50%"
         );
       }
      
       if (spotLightRef3.current) {
         tl.to([spotLightRef3.current], {
           intensity: .5, // Les lumières augmentent en intensité
+          duration: 1,
             ease: "linear",
-        },"<30%");
-  
+        },"<");
+
+        mm.add("(max-width: 999px)", ()=> {   
+          tl.to(spotLightRef3.current, {
+            intensity: 1,
+          });
+            tl.to(spotLightRef3.current.position, {
+              x: 0,
+              y: 10,
+              z: -1
+            },"<");
+        
+        })
       }
       tl.to({}, {},"<50%");
 
     return () => ScrollTrigger.getAll().forEach((t) => t.kill());
-  }, []);
+  }, [targetRef]);
 
   // 📌 Applique progressivement la position et la rotation
   useFrame(() => {
@@ -196,19 +223,51 @@ textAndOtherTl
 
 
 function CarShow() {
-  const targetRef = useRef();
+
   const spotLightRef1 = useRef();
   const spotLightRef2 = useRef();
   const spotLightRef3 = useRef();
   const textRef = gsap.utils.toArray('.container img');
   const groundRef = useRef();
+  const targetRef = useRef();
+
+ 
+  // useEffect(() => {
+  //   const mm = gsap.matchMedia();
+
+  //   mm.add("(max-width: 999px)", () => {
+  //     if (targetRef.current) {
+  //       gsap.set(targetRef.current.position, {
+  //         x: -0.25,
+  //         y: 0,
+  //         z: -4
+  //       });
+  //     }
+  //   });
+
+  //   mm.add("(min-width: 1000px)", () => {
+  //     if (targetRef.current) {
+  //       gsap.set(targetRef.current.position, {
+  //         x: -0.25,
+  //         y: 0,
+  //         z: -5
+  //       });
+  //     }
+  //   });
+
+  //   // Cleanup function to revert any changes if needed
+  //   return () => {
+  //     mm.revert();
+  //   };
+  // }, []);
+
 
   return (
     <>
     
 
 <CameraRig groundRef={groundRef} spotLightRef1={spotLightRef1} 
-        spotLightRef2={spotLightRef2}  spotLightRef3={spotLightRef3}/>
+        spotLightRef2={spotLightRef2}  spotLightRef3={spotLightRef3} targetRef={targetRef}/>
 
       <PerspectiveCamera makeDefault fov={50} position={[0, 10, 1]} />
 

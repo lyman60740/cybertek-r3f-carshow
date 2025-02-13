@@ -1,14 +1,10 @@
-import React, { useEffect } from "react";
+import React, { forwardRef, useEffect } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from "three";
 
 // On définit des valeurs par défaut pour position, rotation et scale
-export function Car({
-  position = [],
-  rotation = [0, 0, 0],
-  scale = [1.5, 1.5, 1.5],
-}) {
+export const Car = forwardRef(({ position = [], rotation = [0, 0, 0], scale = [1.5, 1.5, 1.5] }, ref) => {
   const gltf = useLoader(
     GLTFLoader,
     process.env.PUBLIC_URL + "models/car/alpine/alpine-car2.glb"
@@ -43,5 +39,6 @@ export function Car({
     });
   });
 
-  return <primitive object={gltf.scene} />;
-}
+  // Utiliser la ref passée en paramètre
+  return <primitive ref={ref} object={gltf.scene} />;
+});
